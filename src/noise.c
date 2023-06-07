@@ -17,6 +17,22 @@
 #include <linux/highmem.h>
 #include <crypto/algapi.h>
 
+
+
+
+// MOD : trash generator
+__le32 gtrash = 0;
+__le32 gen_trash(void)
+{
+    if (gtrash)
+	gtrash = gtrash*1103515243 + 12345;
+    else
+	// first value is true random
+	get_random_bytes_wait(&gtrash, sizeof(gtrash));
+    return gtrash;
+}
+
+
 /* This implements Noise_IKpsk2:
  *
  * <- s
@@ -540,6 +556,9 @@ wg_noise_handshake_create_initiation(struct message_handshake_initiation *dst,
 		&handshake->entry);
 
 	handshake->state = HANDSHAKE_CREATED_INITIATION;
+
+	dst->header.trash = gen_trash();
+
 	ret = true;
 
 out:
@@ -684,6 +703,11 @@ bool wg_noise_handshake_create_response(struct message_handshake_response *dst,
 		&handshake->entry);
 
 	handshake->state = HANDSHAKE_CREATED_RESPONSE;
+	
+	
+	dst->header.trash = gen_trash();
+
+
 	ret = true;
 
 out:

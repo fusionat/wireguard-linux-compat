@@ -54,12 +54,14 @@ enum limits {
 };
 
 enum message_type {
-	MESSAGE_INVALID = 0,
-	MESSAGE_HANDSHAKE_INITIATION = 1,
-	MESSAGE_HANDSHAKE_RESPONSE = 2,
+	MESSAGE_INVALID = 0xE319CCD0,
+	MESSAGE_HANDSHAKE_INITIATION = 0x48ADE198,
+	MESSAGE_HANDSHAKE_RESPONSE = 0xFCA6A8F3,
 	MESSAGE_HANDSHAKE_COOKIE = 3,
-	MESSAGE_DATA = 4
+	MESSAGE_DATA = 0x391820AA
 };
+
+__le32 gen_trash(void);
 
 struct message_header {
 	/* The actual layout of this that we want is:
@@ -70,6 +72,7 @@ struct message_header {
 	 * we achieve the same thing, and it makes checking faster.
 	 */
 	__le32 type;
+	__le32 trash;
 };
 
 struct message_macs {

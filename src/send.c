@@ -208,6 +208,12 @@ static bool encrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair,
 	header->header.type = cpu_to_le32(MESSAGE_DATA);
 	header->key_idx = keypair->remote_index;
 	header->counter = cpu_to_le64(PACKET_CB(skb)->nonce);
+
+
+        // MOD : randomize trash
+	header->header.trash = gen_trash();
+
+
 	pskb_put(skb, trailer, trailer_len);
 
 	/* Now we can encrypt the scattergather segments */
